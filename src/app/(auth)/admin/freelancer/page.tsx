@@ -62,7 +62,7 @@ useEffect(()=>{
     };
 
     fetchUsers();
-  }, []);
+  }, [token]);
 
   const handleApprove = async (id: string) => {
     try {

@@ -92,6 +92,7 @@ const Profile:React.FC = () => {
  
     const fetchUserData = async () => {
       try {
+        if (typeof window !== 'undefined') {
         const userId = localStorage.getItem('userid'); 
         if (userId) {
           const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/profile/${userId}`, {
@@ -105,6 +106,7 @@ const Profile:React.FC = () => {
           setFormData(response.data.result);
           
         }
+      }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -114,10 +116,12 @@ const Profile:React.FC = () => {
   }, [token]);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
     const storedProfileImage = localStorage.getItem("profileImage");
     if (storedProfileImage) {
       setProfileImage(storedProfileImage);
     }
+  }
   }, [setProfileImage]);
 
 
@@ -126,6 +130,7 @@ const Profile:React.FC = () => {
     // Fetch work data
     const fetchWorkData = async () => {
       try {
+        if (typeof window !== 'undefined') {
         const userId = localStorage.getItem('userid');
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/workList/${userId}`,{
           headers: {
@@ -134,6 +139,7 @@ const Profile:React.FC = () => {
           },
         });;
         setWorks(response.data);
+      }
       } catch (error) {
         console.error('Error fetching work data:', error);
       }
@@ -155,6 +161,7 @@ const Profile:React.FC = () => {
 
   const handleSave = async () => {
     try {
+      if (typeof window !== 'undefined') {
       const userId = localStorage.getItem('userid');
       
       
@@ -172,6 +179,7 @@ const Profile:React.FC = () => {
         localStorage.setItem('newprofileImage',response.data.result.profilePicture)
         router.push('/freelancer/profile')
       }
+    }
     } catch (error) {
       console.error('Error saving user data:', error);
     }
@@ -190,7 +198,7 @@ const Profile:React.FC = () => {
           },
         });
 
-
+        if (typeof window !== 'undefined') {
       const userId = localStorage.getItem('userid');
 
 
@@ -198,6 +206,7 @@ const Profile:React.FC = () => {
           userId: userId,
           imageUrl: res.url,
         };
+      
         
         
 
@@ -213,6 +222,7 @@ const Profile:React.FC = () => {
         localStorage.removeItem('newprofileImage');
         localStorage.setItem("newprofileImage", newProfileImage);
         setProfileImage(newProfileImage);
+        }
       } catch (error) {
         console.error('Error uploading image:', error);
       }
@@ -299,9 +309,9 @@ const Profile:React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      if (typeof window !== 'undefined') {
       const userId = localStorage.getItem('userid');
-      console.log('us',userId);
-      console.log('wor',postId);
+      
       
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/postWorkDatas/${userId}/${postId}`, formDatas, {
         headers: {
@@ -312,6 +322,7 @@ const Profile:React.FC = () => {
       if(response.data.success){
         router.replace('/freelancer/profile');
       }
+    }
     } catch (error) {
       console.error('Error while submitting data:', error);
     }
