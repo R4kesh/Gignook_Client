@@ -2,6 +2,7 @@
 import React from 'react'
 import { Edit, Bookmark, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 
 const LeftProfile = () => {
@@ -15,8 +16,8 @@ const LeftProfile = () => {
   return (
    
     <div className="w-1/4 h-1/2 p-4 border shadow-lg rounded-lg flex flex-col items-center sticky top-4 bg-white">
-    <img
-      src={profileImage}
+    <Image
+      src={profileImage!}
       alt="Profile Icon"
       width={100}
       height={100}

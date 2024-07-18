@@ -36,6 +36,23 @@ interface User {
   education:string[]
 }
 
+const initialUserState: User = {
+  _id: '',
+  firstname: '',
+  displayName: '',
+  lastname: '',
+  languages: [],
+  email: '',
+  skills: [],
+  phoneNumber: '',
+  isVerified: false,
+  isBlocked: false,
+  description: '',
+  service: [],
+  personalWebsite: '',
+  education: [],
+};
+
 interface Work {
   project_name: string;
   description: string;
@@ -53,9 +70,9 @@ const Profile:React.FC = () => {
   const userId = useUserStore((state) => state.userid);
   const profileImage = useUserStore((state) => state.profileImage);
   const setProfileImage = useUserStore((state) => state.setProfileImage);
-  const [userData, setUserData] = useState<User>({});
+  const [userData, setUserData] = useState<User>(initialUserState);
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState<User>({});
+  const [formData, setFormData] = useState<User>(initialUserState);
   const { edgestore } = useEdgeStore();
   const router=useRouter()
   const email = localStorage.getItem("email");
@@ -94,7 +111,7 @@ const Profile:React.FC = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     const storedProfileImage = localStorage.getItem("profileImage");
@@ -123,7 +140,7 @@ const Profile:React.FC = () => {
     };
 
     fetchWorkData();
-  }, [userId]);
+  }, [userId,token]);
 
 
 
@@ -645,7 +662,15 @@ const Profile:React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 {works.map((work, index) => (
                   <div key={index} className="bg-gray-100 p-4 rounded-md">
-                    <Image src={work.images} alt={work.title} className="w-full h-40 object-cover mb-2 rounded-md" />
+                    {typeof work.images === 'string' && (
+  <Image
+    width={75}
+    height={75}
+    src={work.images}
+    alt={work.title}
+    className="w-full h-40 object-cover mb-2 rounded-md"
+  />
+)}
                     <h3 className="text-lg font-semibold mb-2">{work.title}</h3>
                     <p className="text-gray-600 mb-1">{work.description}</p>
                     <p className="text-gray-500 text-xs"> ₹{work.cost}</p>

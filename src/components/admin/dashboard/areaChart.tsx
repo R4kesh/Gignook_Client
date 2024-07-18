@@ -29,11 +29,11 @@ ChartJS.register(
 
 const AreaChart: React.FC = () => {
   const [chartData, setChartData] = useState({
-    labels: [],
+    labels: [] as string[],
     datasets: [
       {
         label: 'Daily Payments',
-        data: [],
+        data: [] as number[],
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
@@ -93,11 +93,11 @@ const AreaChart: React.FC = () => {
 
 const BarChart: React.FC = () => {
   const [chartData, setChartData] = useState({
-    labels: [],
+    labels: [] as string[],
     datasets: [
       {
         label: 'Total Payments',
-        data: [],
+        data: [] as number[],
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,

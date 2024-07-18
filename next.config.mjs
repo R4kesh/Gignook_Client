@@ -24,6 +24,11 @@ const nextConfig = {
                 hostname: 'gignook.s3.eu-north-1.amazonaws.com',
                 pathname: '**',
             },
+            {
+                protocol: 'https',
+                hostname: 'lemon.io',
+                pathname: '**',
+            },
           ],
     },
     reactStrictMode:false

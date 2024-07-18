@@ -66,30 +66,42 @@ const Navbar = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const id=localStorage.getItem('userid')
-const email=localStorage.getItem("email") 
-const userid=localStorage.getItem('userid')
+  const [id,setId]=useState<string | null>()
+
+if (typeof window !== 'undefined') {
+  const email=localStorage.getItem("email") 
 const data={
   email:email
 } 
+}
+
 const {status}=useSession()
 const router = useRouter()
 const [userData, setUserData] = useState<User>();
-const token = localStorage.getItem('token');
+
 const handleSignOut = async () => {
     await signOut({ redirect: false }); 
+    if (typeof window !== 'undefined') {
     localStorage.clear();
+    }
     router.push('/login'); 
   };
 
   const handleLogout = () => {
+    if (typeof window !== 'undefined') {
     localStorage.clear();
+    }
   
     router.push('/login');
   };
 
-  useEffect(() => {
+ 
     
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+    const userid=localStorage.getItem('userid')
+    setId(localStorage.getItem('userid'))
     
     socket.on(`notification_${userid}`, (data) => {
 
@@ -101,11 +113,19 @@ const handleSignOut = async () => {
     return () => {
       socket.off(`notification_${userid}`);
     };
-  }, [userid]);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        if (typeof window !== 'undefined') {
+        const email=localStorage.getItem("email") 
+        const token = localStorage.getItem('token');
+        const data = {
+          email: email
+        }
+        
         const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/switchfreelancer`,data,{
           headers: {
             'Content-Type': 'application/json',
@@ -115,6 +135,7 @@ const handleSignOut = async () => {
        
 
         setUserData(res.data.data); 
+      }
       } catch (error) {
         console.error('Error fetching freelancers:', error);
       }

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 const Featured = () => {
@@ -25,7 +26,9 @@ const Featured = () => {
           </div>
         </div>
         <div className="right h-80 mt-8 md:mt-0">
-          <img src="./img/man.png" alt="" className="h-max w-full md:w-auto object-contain" />
+          <Image    width={75}
+      height={75}
+ src="/img/man.png" alt="" className="h-max w-full md:w-auto object-contain" />
         </div>
       </div>
     </div>

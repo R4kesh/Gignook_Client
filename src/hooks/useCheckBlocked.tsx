@@ -31,7 +31,7 @@ const useCheckBlockedStatus = () => {
     const intervalId = setInterval(checkBlockedStatus, 2000); 
 
     return () => clearInterval(intervalId);
-  }, [token, router]);
+  }, [token, router,userid]);
 };
 
 export default useCheckBlockedStatus;

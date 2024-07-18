@@ -87,7 +87,8 @@ const Header = () => {
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">Profile</Button>
+            <Button variant="outlined">Profile</Button>
+
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>

@@ -60,7 +60,7 @@ const id=localStorage.getItem('userid')
     const socketInstance = io(`${process.env.NEXT_PUBLIC_BASE_URL}`);
     setSocket(socketInstance);
     setId(id)
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     socket?.emit('addUser', id);
@@ -73,7 +73,7 @@ const id=localStorage.getItem('userid')
         messages: [...prev.messages, { user: data.user, message: data.message }]
       }));
     });
-  }, [socket]);
+  }, [socket,id]);
 
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -93,7 +93,7 @@ const id=localStorage.getItem('userid')
       setConversations(res.data)
     }
     fetchConversations()
-  }, [message])
+  }, [message,token])
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -107,7 +107,7 @@ const id=localStorage.getItem('userid')
       setUsers(res.data)
     }
     fetchUsers()
-  }, [])
+  }, [id,token])
 
   const fetchMessages = async (conversationId:any, receiver:any) => {
     const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/message/${conversationId}?senderId=${id}&&receiverId=${receiver?.receiverId}`, {
@@ -198,7 +198,8 @@ const id=localStorage.getItem('userid')
               return (
               <div key={conversationId} className='flex items-center py-8 border-b border-b-slate-950-300'>
                 <div className='cursor-pointer flex items-center' onClick={() => fetchMessages(conversationId, user)}>
-                  <div><img src="" alt="" className="w-15 h-15 rounded-full p-1 border border-primary" /></div>
+                  <div><Image  width={15}
+      height={15} src="" alt="" className="w-15 h-15 rounded-full p-1 border border-primary" /></div>
                   <div className='ml-6'>
                     
                     <h3 className='text-lg font-semibold'>{user.firstname}</h3>
@@ -215,7 +216,7 @@ const id=localStorage.getItem('userid')
       <div className='w-1/2 h-screen bg-white flex flex-col items-center'>
         {messages?.receiver && 
           <div className='w-3/4 bg-secondary h-20 my-14 rounded-full flex items-center px-14 py-2'>
-            <div className='cursor-pointer'><img src={messages?.receiver?.profilePicture} alt="" width={60} height={60} className="rounded-full" /></div>
+            <div className='cursor-pointer'><Image src={messages?.receiver?.profilePicture} alt="" width={60} height={60} className="rounded-full" /></div>
             <div className='ml-6 mr-auto'>
              {/* ///////////////////////////////////////////// */}
               <h3 className='text-lg'>{messages?.receiver?.fullName}</h3>
@@ -276,7 +277,8 @@ const id=localStorage.getItem('userid')
           {users.length > 0 ? users.map(({ userId, user }) => (
             <div key={userId} className='flex items-center py-8 border-b border-b-gray-300'>
               <div className='cursor-pointer flex items-center' onClick={() => fetchMessages("new", user)}>
-                <div><img src="" alt="" className="w-15 h-15 rounded-full p-1 border border-primary" /></div>
+                <div><Image  width={75}
+      height={75} src="" alt="" className="w-15 h-15 rounded-full p-1 border border-primary" /></div>
                 <div className='ml-6'>
                   <h3 className='text-lg font-semibold'>{user?.fullName}</h3>
                   <p className='text-sm font-light text-gray-600'>{user?.email}</p>

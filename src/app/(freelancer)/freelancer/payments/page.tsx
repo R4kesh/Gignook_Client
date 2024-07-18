@@ -46,7 +46,7 @@ const Payment = () => {
     };
 
     fetchPaymentHistory();
-  }, []);
+  }, [token]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

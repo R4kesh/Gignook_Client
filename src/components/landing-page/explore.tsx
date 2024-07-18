@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 const explore = () => {
@@ -19,7 +20,9 @@ const explore = () => {
             { src: "https://fiverr-res.cloudinary.com/npm-assets/@fiverr/logged_out_homepage_perseus/apps/photography.01cf943.svg", label: "Photography" },
           ].map((item, index) => (
             <div key={index} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 h-40 flex flex-col items-center justify-center cursor-pointer p-4">
-              <img src={item.src} alt="" className="w-12 h-12 mb-2" />
+              <Image width={12}
+      height={12}
+ src={item.src} alt="" className="w-12 h-12 mb-2" />
               <div className="w-12 h-1 bg-gray-300 transition-all duration-300"></div>
               <span className="font-light mt-2">{item.label}</span>
             </div>

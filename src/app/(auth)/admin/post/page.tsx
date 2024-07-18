@@ -23,10 +23,16 @@ const Post: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10); 
-  const token = localStorage.getItem("admin_access_token");
+  const [token,setToken]=useState<string | null>()
+
+  useEffect(()=>{
+    setToken(localStorage.getItem("admin_access_token"))
+  },[token])
+  
 
   const handleAction = async (postId: string, isListed: boolean) => {
     try {
+      
       const action = isListed ? 'unlist' : 'unlist';
       await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/posts/${postId}/${action}`, {}, {
         headers: {
@@ -68,7 +74,7 @@ const Post: React.FC = () => {
       }
     };
     fetchPosts();
-  }, []);
+  }, [token]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -106,7 +112,7 @@ const Post: React.FC = () => {
                 <td className="border px-4 py-2 text-center">
           
                   {post.images.map((document:any, index:any) => (
-                    <a 
+                    <a key={index}
   className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg text-center mr-2 mb-2"
   href={document}
   target="_blank"

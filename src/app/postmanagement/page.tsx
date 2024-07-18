@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import Image from 'next/image';
 
 interface InterestedUser {
   _id: string;
@@ -52,7 +53,7 @@ const Posts = () => {
     if (id) {
       fetchPosts();
     }
-  }, [id]);
+  }, [id,token]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -71,7 +72,10 @@ const Posts = () => {
         <div className="grid grid-cols-1 gap-6">
           {posts.map((post) => (
             <div key={post._id} className="bg-white p-4 rounded-lg shadow-md flex">
-              <img
+              <Image
+              width={24}
+              height={24}
+        
                 src={post.images[0]}
                 alt={post.title}
                 className="w-24 h-24 object-cover rounded-md mr-4"
@@ -90,7 +94,10 @@ const Posts = () => {
                   <div className="flex space-x-4 mt-2">
                     {Array.isArray(post.interestedUsers) && post.interestedUsers.map((person) => (
                       <div key={person._id} className="flex items-center space-x-2">
-                        <img
+                        <Image
+                        width={8}
+                        height={8}
+                  
                           src={person.profilePicture}
                           alt={person.firstname}
                           className="w-8 h-8 rounded-full"

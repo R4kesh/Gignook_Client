@@ -14,6 +14,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 import { useFeedbackStore } from '@/store/feedback';
+import Image from 'next/image';
 
 const PaymentSuccessPage: React.FC = () => {
   const router = useRouter();
@@ -78,7 +79,10 @@ const PaymentSuccessPage: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-        <img
+        <Image
+        width={16}
+        height={16}
+  
           src="/img/success.png" 
           alt="Success"
           className="w-16 h-16 mx-auto mb-4"

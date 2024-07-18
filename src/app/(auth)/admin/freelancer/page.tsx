@@ -31,13 +31,18 @@ function Approval() {
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [token,setToken]=useState<string | null>()
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
-  const token = localStorage.getItem("admin_access_token");
+
+useEffect(()=>{
+  setToken(localStorage.getItem("admin_access_token"))
+},[token])
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+      
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/freelancer`,{
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -77,6 +82,8 @@ function Approval() {
 
   const handleReject = async (id: string) => {
     try {
+      const token = localStorage.getItem("admin_access_token");
+
       await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/freelancer/reject/${id}`,{
         headers: {
           'Authorization': `Bearer ${token}`,

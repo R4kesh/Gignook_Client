@@ -5,7 +5,7 @@ import Sidebar from '@/components/admin/dashboard/sidebar'
 import Card from '@/components/admin/dashboard/card'
 import { AreaChart,BarChart } from '@/components/admin/dashboard/areaChart'
 import axios from 'axios'
-const token = localStorage.getItem("admin_access_token");
+
 
 
 const Dashboard = () => {
@@ -18,6 +18,7 @@ const Dashboard = () => {
   useEffect(()=>{
     const fetchUsers = async () => {
     try {
+      const token = localStorage.getItem("admin_access_token");
       const res=await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/count_display`,{
         headers: {
           'Authorization': `Bearer ${token}`,

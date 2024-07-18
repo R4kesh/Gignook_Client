@@ -38,7 +38,8 @@ const Landing = () => {
       <div className="flex items-center gap-2 font-medium text-gray-600">
         <Image src="/img/check.png" alt="" className="w-6 h-6" width={6}
       height={6}/>
-        Pay when you're happy
+      <p>Pay when you&apos;re happy</p>
+
       </div>
       <p className="text-gray-600 text-base font-light leading-7 tracking-wide">
         AUpfront quotes mean no surprises. Payments only get released when you

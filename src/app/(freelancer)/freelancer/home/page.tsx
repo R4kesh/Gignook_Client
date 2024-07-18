@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import { Edit, Bookmark, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -37,30 +37,30 @@ const FreelancerHome = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [openShare, setOpenShare] = useState<{ isOpen: boolean, postId: string | null }>({ isOpen: false, postId: null });
   const userid = localStorage.getItem("userid");
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
 
   const router = useRouter();
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
-  const fetchPosts = async () => {
+
+  const fetchPosts = useCallback(async () => {
     if (isLoading) return;
     setIsLoading(true);
-
+  
     try {
+      if (typeof window !== 'undefined') {
+  const token = localStorage.getItem('token');
+
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/posts?page=${page}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
       });
-      
-
+  
       if (response.data && Array.isArray(response.data.posts)) {
         const newPosts = response.data.posts.filter(
-          (newPost: Post) => !posts.some(existingPost => existingPost._id === newPost._id)
+          (newPost:any) => !posts.some(existingPost => existingPost._id === newPost._id)
         );
         setPosts((prevPosts) => [...prevPosts, ...newPosts]);
         setTotalPosts(response.data.totalPosts);
@@ -70,13 +70,18 @@ const FreelancerHome = () => {
         console.error('Invalid response format:', response.data);
         setHasMore(false);
       }
+    }
     } catch (error) {
       console.error('Error fetching posts:', error);
       setHasMore(false);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLoading, page, posts]);
+  
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   const handleInterest = async (postId: string,userId:string) => {
     if (!userid) return;

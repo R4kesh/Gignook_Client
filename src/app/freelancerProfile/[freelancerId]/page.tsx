@@ -85,7 +85,7 @@ const FreelancerProfilePage = ({params}:{params:{freelancerId:string}}) => {
 
     }
     fetchData();
-  },[value])
+  },[value,id,token])
 
   useEffect(()=>{
     try {
@@ -112,7 +112,7 @@ const FreelancerProfilePage = ({params}:{params:{freelancerId:string}}) => {
     } catch (error) {
       
     }
-  },[id])
+  },[id,token])
 
   useEffect(()=>{
     const fetchData=async()=>{
@@ -132,7 +132,7 @@ try {
 }
     }
     fetchData();
-  },[id])
+  },[id,token])
 
   const handleChat =async () => {
    
@@ -259,8 +259,11 @@ try {
         <div className="w-1/3">
           <div className="bg-white p-6 rounded-lg shadow-lg sticky top-6">
             <div className="flex items-center gap-4 mb-4">
-              <img
-                src={freelancer?.profilePicture} // Replace with actual path
+              <Image
+                width={12}
+                height={12}
+          
+                src={freelancer?.profilePicture!} 
                 alt="Profile Picture"
                 className="w-12 h-12 rounded-full"
               />
@@ -322,7 +325,10 @@ try {
             <p className="text-gray-800 mb-4">{review.feedback}</p>
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <img
+                <Image
+                  width={10}
+                  height={10}
+            
                   src={review.workId.images[0]} // Placeholder for the logo image
                   alt={review.workId.images[0]}
                   className="w-10 h-10 mr-2"

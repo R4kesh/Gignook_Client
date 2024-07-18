@@ -55,7 +55,7 @@ const Login = () => {
     } else {
       router.push("/login");
     }
-  }, [status]);
+  }, [router,session,status]);
 
 
   const handleSubmit=async(e:React.FormEvent<HTMLFormElement>)=>{

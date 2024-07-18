@@ -18,7 +18,7 @@ const AuthRoute = ({ children }:AuthRouteProps) => {
     }else{
       router.push('/login')
     }
-  }, []);
+  }, [router]);
 
   return <>{children}</>;
 };

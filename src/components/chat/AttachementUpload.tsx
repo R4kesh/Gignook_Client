@@ -24,7 +24,8 @@ export function AttachementUpload() {
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+          <p>Make changes to your profile here. Click save when you&apos;re done.</p>
+
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

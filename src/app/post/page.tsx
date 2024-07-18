@@ -1,11 +1,11 @@
-"use client"
-import Navbar from '@/components/home/navbar';
-import React, { useState,ChangeEvent } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
-
+"use client";
+import Navbar from "@/components/home/navbar";
+import React, { useState, ChangeEvent } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import Image from "next/image";
 
 interface ProjectData {
   title: string;
@@ -17,56 +17,56 @@ interface ProjectData {
 }
 
 const Post = () => {
-  const router=useRouter()
-  const userid=localStorage.getItem("userid")
+  const router = useRouter();
+  // const userid=localStorage.getItem("userid")
   const [errors, setErrors] = useState<Partial<ProjectData>>({});
-  const [warning, setWarning] = useState<string>('');
+  const [warning, setWarning] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File[]>([]);
-  const [postId,setPostId]=useState('')
+  const [postId, setPostId] = useState("");
   const [fileUploaded, setFileUploaded] = useState(false);
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
   const [projectData, setProjectData] = useState<ProjectData>({
-    title: '',
-    description: '',
-    category: '',
+    title: "",
+    description: "",
+    category: "",
     budget: 0,
     isBudgetFlexible: false,
-    date: '',
+    date: "",
   });
+  
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    const validTypes = ['image/jpeg', 'image/jpg'];
-    
+    const validTypes = ["image/jpeg", "image/jpg"];
+
     if (files) {
-      const isValid = Array.from(files).every(file => validTypes.includes(file.type));
+      const isValid = Array.from(files).every((file) =>
+        validTypes.includes(file.type)
+      );
 
       if (isValid) {
         setSelectedFile(Array.from(files));
-        setWarning('');
+        setWarning("");
       } else {
         setSelectedFile([]);
-        setWarning('Only JPEG and JPG files are allowed.');
+        setWarning("Only JPEG and JPG files are allowed.");
       }
     } else {
       setSelectedFile([]);
-      setWarning('');
+      setWarning("");
     }
   };
 
   const handleUpload = async () => {
-    if (selectedFile.length>0) {
-     
-     
-     
+    if (selectedFile.length > 0) {
       const formData = new FormData();
       selectedFile.forEach((file) => {
         formData.append("files", file);
       });
-      
-      
+
       setFileUploaded(true);
-      
+      const userid = localStorage.getItem("userid");
+      const token = localStorage.getItem("token");
       try {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/postFile/${userid}`,
@@ -74,49 +74,47 @@ const Post = () => {
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              'Authorization': `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
             },
           }
         );
-        if(response.data.success){
-          
-     
+        if (response.data.success) {
           setSelectedFile([]);
-          setPostId(response.data.datas._id)
-          
+          setPostId(response.data.datas._id);
         }
-       
-        
       } catch (error) {
         console.log(error);
       }
     }
   };
-  
-  
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value, type } = event.target;
 
     const isCheckbox = (target: EventTarget): target is HTMLInputElement => {
       return (target as HTMLInputElement).checked !== undefined;
     };
 
-
     setProjectData((prevData) => ({
       ...prevData,
-      [name]: type === 'checkbox' ? isCheckbox : value,
+      [name]: type === "checkbox" ? isCheckbox : value,
     }));
   };
 
   const validateForm = () => {
     const newErrors: Partial<ProjectData> = {};
 
-    if (!projectData.title) newErrors.title = 'Title is required';
-    if (!projectData.description) newErrors.description = 'Description is required';
-    if (!projectData.category) newErrors.category = 'Category is required';
-    if (projectData.budget <= 0) newErrors.budget = 'Budget must be greater than zero';
-    if (!projectData.date) newErrors.date = 'Date is required';
+    if (!projectData.title) newErrors.title = "Title is required";
+    if (!projectData.description)
+      newErrors.description = "Description is required";
+    if (!projectData.category) newErrors.category = "Category is required";
+    if (projectData.budget <= 0)
+      newErrors.budget = "Budget must be greater than zero";
+    if (!projectData.date) newErrors.date = "Date is required";
 
     setErrors(newErrors);
 
@@ -124,30 +122,34 @@ const Post = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault(); 
+    event.preventDefault();
+    const userid = localStorage.getItem("userid");
+    const token = localStorage.getItem("token");
     if (!validateForm()) {
       return;
     }
     try {
-     const response= await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/postDatas/${userid}/${postId}`, projectData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/postDatas/${userid}/${postId}`,
+        projectData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("post uploaded succesfully", {
+        position: "top-center",
       });
-      toast.success("post uploaded succesfully",{
-        position:"top-center",
-        
-      })
 
-      if(response.data.datas){
+      if (response.data.datas) {
         console.log(response.data.datas);
-        router.push('/home')
+        router.push("/home");
       }
-      
-
     } catch (error) {
-      console.error('Form submission failed:', error);
+      console.error("Form submission failed:", error);
     }
   };
 
@@ -159,7 +161,9 @@ const Post = () => {
         <div className="flex-1 p-8">
           <h2 className="text-2xl font-semibold mb-4">Let the post begin...</h2>
           <p>This post will help you find the best freelancers.</p>
-          <img
+          <Image
+            width={400}
+            height={300}
             src="https://lemon.io/wp-content/uploads/2020/03/pic-landing-best-freelance-platf-hero@3x.jpg"
             alt="Login"
             className="h-full w-full object-cover"
@@ -180,14 +184,20 @@ const Post = () => {
               accept='/jpeg/jpg'
               
             /> */}
-            <Input id="pdfUpload" type="file"  name="pdfUpload"
-            className="border rounded p-2 text-black"
-            onChange={handleFileChange}
-            multiple
-            accept='/jpeg/jpg'
+            <Input
+              id="pdfUpload"
+              type="file"
+              name="pdfUpload"
+              className="border rounded p-2 text-black"
+              onChange={handleFileChange}
+              multiple
+              accept="/jpeg/jpg"
             />
-              {warning && <p className="text-red-500">{warning}</p>}
-            <button onClick={handleUpload} className="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+            {warning && <p className="text-red-500">{warning}</p>}
+            <button
+              onClick={handleUpload}
+              className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+            >
               Upload
             </button>
           </div>
@@ -204,7 +214,7 @@ const Post = () => {
                   className="border border-gray-300 p-2 rounded w-full"
                   placeholder="Project title"
                 />
-                 {errors.title && <p className="text-red-500">{errors.title}</p>}
+                {errors.title && <p className="text-red-500">{errors.title}</p>}
               </div>
               <div className="mb-4">
                 <p>Where are you looking to get done?</p>
@@ -215,7 +225,9 @@ const Post = () => {
                   className="border border-gray-300 p-2 rounded w-full"
                   placeholder="Project description"
                 ></textarea>
-                {errors.description && <p className="text-red-500">{errors.description}</p>}
+                {errors.description && (
+                  <p className="text-red-500">{errors.description}</p>
+                )}
               </div>
               <div className="mb-4">
                 <p>Which category best fits your project?</p>
@@ -234,13 +246,16 @@ const Post = () => {
                   <option value="Writing">Writing</option>
                   <option value="DigitalMarketing">Digital Marketing</option>
                   <option value="Voice">Voice Over</option>
-
-
                 </select>
-                {errors.category && <p className="text-red-500">{errors.category}</p>}
+                {errors.category && (
+                  <p className="text-red-500">
+                    {errors.category.replace(/'/g, "&#39;")}
+                  </p>
+                )}
               </div>
               <div className="mb-4">
-                <p>I'm looking to spend...</p>
+                <p>I&apos;m looking to spend...</p>
+
                 <input
                   type="number"
                   name="budget"
@@ -248,7 +263,9 @@ const Post = () => {
                   onChange={handleInputChange}
                   className="border border-gray-300 p-2 rounded w-full"
                 />
-                {errors.budget && <p className="text-red-500">{errors.budget}</p>}
+                {errors.budget && (
+                  <p className="text-red-500">{errors.budget}</p>
+                )}
               </div>
               <div className="mb-4">
                 <label>
@@ -273,7 +290,12 @@ const Post = () => {
                 />
                 {errors.date && <p className="text-red-500">{errors.date}</p>}
               </div>
-              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-2">Submit</button>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+              >
+                Submit
+              </button>
             </form>
           )}
         </div>

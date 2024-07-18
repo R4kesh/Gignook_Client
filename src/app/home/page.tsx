@@ -4,17 +4,16 @@ import Category from '@/components/home/category';
 import Navbar from '@/components/home/navbar';
 import { category } from '@/lib/categories';
 import axios from 'axios';
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useState,useRef} from 'react';
 import { useUserStore } from '@/store/userDetails';
 import ShowallCategory from '@/components/home/showAllCategory';
 import Footer from '@/components/landing-page/footer';
 import Explore from '@/components/landing-page/explore';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import {io} from 'socket.io-client'
+import io,{Socket} from 'socket.io-client'
 import useDebounce from '@/hooks/useDebounce';
-import Rating from '@mui/material/Rating';
-import Stack from '@mui/material/Stack';
+import Image from 'next/image';
 
 interface Freelancer {
   _id: string;
@@ -42,29 +41,29 @@ interface Works{
 }
 
 const Home = () => {
-  // useCheckBlockedStatus();
   const { status, data: session } = useSession();
   const [userData, setUserData] = useState<Freelancer[]>([]);
   const [workData,setWorkData]= useState<Works[]>([]);
   const [loading, setLoading] = useState(true);
-  const userId = localStorage.getItem('email');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const router = useRouter();
-  const token = localStorage.getItem('token');
   const debouncedSearchTerm=useDebounce(searchTerm,900)
+  const socketRef = useRef<Socket | null>(null);
 
+  useEffect(() => {
+    socketRef.current = io(`${process.env.NEXT_PUBLIC_BASE_URL}`);
+    socketRef.current.on('notifyLike', (data) => {
+      alert(`Your post was liked by ${data.userId}`);
+    });
 
-  let socket;
-useEffect(()=>{
-  socket=io(`${process.env.NEXT_PUBLIC_BASE_URL}`)
-  socket.on('notifyLike', (data) => {
-    alert(`Your post was liked by ${data.userId}`);
-  
-  });
-  
-},[])  
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, []); 
 
 useEffect(() => {
     if (session?.user?.name && session?.user?.email) {
@@ -74,10 +73,12 @@ useEffect(() => {
       useUserStore.getState().setLastName(lastName);
       useUserStore.getState().setEmail(email);
     } else {
+      if (typeof window !== 'undefined') {
       const name = localStorage.getItem("name");
       const email = localStorage.getItem("email");
       const profileImage=localStorage.getItem("profileImage")
       const userid=localStorage.getItem("email")
+      
       if (name && email && profileImage && userid) {
         const fullname = name.split(' ');
         if (fullname.length === 2) {
@@ -94,12 +95,17 @@ useEffect(() => {
         console.log('Full name or email not found in localStorage');
       }
     }
+    }
   }, [session]);
 
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        if (typeof window !== 'undefined') {
+  const token = localStorage.getItem('token');
+        
+
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/listFreelancers`, {
           headers: {
             'Content-Type': 'application/json',
@@ -112,21 +118,24 @@ useEffect(() => {
         });
         setLoading(false);
         setUserData(response.data.data);
-       
+      }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
 
-    if (userId) {
+
       fetchUserData();
-    }
-  }, [userId, debouncedSearchTerm, selectedCategory, sortOrder]);
+
+  }, [debouncedSearchTerm, selectedCategory, sortOrder]);
 
 
   useEffect(() => {
     const fetchWorkData = async () => {
       try {
+        if (typeof window !== 'undefined') {
+  const token = localStorage.getItem('token');
+
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/listWorks`, {
           headers: {
             'Content-Type': 'application/json',
@@ -135,15 +144,16 @@ useEffect(() => {
        
         
         setWorkData(response.data.data);
+        }
       } catch (error) {
         console.error('Error fetching work data:', error);
       }
     };
 
-    if (userId) {
+
       fetchWorkData();
-    }
-  }, [userId]);
+
+  }, []);
 
   const filteredData = userData
   .filter(freelancer =>
@@ -277,8 +287,11 @@ useEffect(() => {
                 key={freelancer._id}
                 className="bg-gray-100 p-4 rounded-md"
               >
-                <img
+                <Image
                   src={freelancer.profilePicture}
+                  width={100}
+      height={75}
+
                   alt={`${freelancer.firstname} ${freelancer.lastname}`}
                   className="w-full h-40 object-cover mb-2 rounded-md"
                 />
@@ -286,7 +299,7 @@ useEffect(() => {
                   <h3 className="text-lg font-semibold">
                     {freelancer.firstname} {freelancer.lastname}
                   </h3>
-                  <p>{/* Rating component goes here */}</p>
+             
                 </div>
                 <p className="text-gray-1000 font-mono">
                   {freelancer.service.join(', ')}
@@ -325,8 +338,10 @@ useEffect(() => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {workData.map((freelancer, index) => (
               <div key={index} className="bg-gray-100 p-4 rounded-md">
-                <img
+                <Image
                   src={freelancer.images}
+                  width={75}
+                  height={75}
                   alt={freelancer.title}
                   className="w-full h-40 object-cover mb-2 rounded-md"
                 />
@@ -334,7 +349,7 @@ useEffect(() => {
                   {freelancer.title}
                 </h3>
                 <div className="flex items-center mb-2">
-                  <img
+                  <Image
                     src={freelancer.userId.profilePicture}
                     alt={`${freelancer.userId.firstname} profile`}
                     className="w-8 h-8 rounded-full mr-2"

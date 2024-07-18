@@ -48,6 +48,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import Image from 'next/image';
 
 const FreelancerDetailsPage = ({ params }: { params: { workId: string } }) => {
   const router = useRouter();
@@ -85,7 +86,7 @@ try {
 }
     }
     fetchData();
-  },[id])
+  },[id,token])
 
   
 
@@ -117,7 +118,7 @@ try {
     };
 
     fetchData();
-  }, [id,fdata]);
+  }, [id,fdata,token]);
 
   const handleSubmit=async (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
@@ -178,7 +179,9 @@ try {
           <div className="w-2/3 flex flex-col gap-5">
             <h1 className="text-xl font-bold">{freelancer.title}</h1>
             <div className="flex items-center gap-2.5">
-              <img src={freelancer.userId.profilePicture} alt="" className="w-8 h-8 rounded-full object-cover" />
+              <Image width={8}
+      height={8}
+ src={freelancer.userId.profilePicture} alt="" className="w-8 h-8 rounded-full object-cover" />
               <span className="font-bold">{freelancer.userId.firstname}</span>
 
             </div>
@@ -187,7 +190,9 @@ try {
                 <CarouselContent>
                 {freelancer.images.map((image, index) => (
         <CarouselItem key={index}>
-          <img src={image} alt={`Freelancer work ${index + 1}`} className="w-full h-auto object-cover" />
+          <Image width={75}
+      height={75}
+ src={image} alt={`Freelancer work ${index + 1}`} className="w-full h-auto object-cover" />
         </CarouselItem>
       ))}
                 </CarouselContent>
@@ -210,7 +215,9 @@ try {
 
             <h2 className="text-lg font-semibold mb-2">About The Seller</h2>
             <div className="flex items-center gap-4">
-              <img src={freelancer.userId.profilePicture} alt="" className="w-12 h-12 rounded-full" />
+              <Image width={12}
+      height={12}
+ src={freelancer.userId.profilePicture} alt="" className="w-12 h-12 rounded-full" />
               <div className="flex flex-col">
                 <span className="font-semibold text-lg">{freelancer.userId.firstname}</span>
                 {/* <div className="flex items-center gap-1">
@@ -266,7 +273,10 @@ try {
             <p className="text-gray-800 mb-4">{review.feedback}</p>
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <img
+                <Image
+                width={10}
+                height={10}
+          
                   src={review.workId.images[0]} // Placeholder for the logo image
                   alt={review.workId.images[0]}
                   className="w-10 h-10 mr-2"
@@ -297,7 +307,9 @@ try {
               <div className="flex flex-col gap-3 mt-4">
                 
                 <div className="flex items-center gap-2">
-                  <img src="/img/greencheck.png" alt="" className="w-5 h-5" />
+                  <Image width={5}
+      height={5}
+ src="/img/greencheck.png" alt="" className="w-5 h-5" />
                   <span>3-day delivery</span>
                 </div>
                 <span>An Email with the Document and include all source file will be sent</span>

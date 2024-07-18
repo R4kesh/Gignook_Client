@@ -15,7 +15,7 @@ const FreelancerApplicationForm = () => {
   const userEmail = useUserStore((state) => state.email);
   const firstname = useUserStore((state) => state.firstName);
   const lastname = useUserStore((state) => state.lastName); 
-  const token = localStorage.getItem('token');
+
   const [formData,setFormData]=useState<FormData>({
     email:userEmail
   })
@@ -34,6 +34,8 @@ const FreelancerApplicationForm = () => {
     e.preventDefault();
     
     try {
+      if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
       const res=await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/details`,formData,{
         headers:{
           'Content-Type':'application/json',
@@ -50,7 +52,7 @@ const FreelancerApplicationForm = () => {
         return
       }
 
-      
+    }
     } catch (error:any) {
       console.log("error axios",error);
       if (error.response) {

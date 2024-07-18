@@ -15,20 +15,28 @@ const Document = () => {
   const profileImage = useUserStore((state) => state.profileImage);
   const setProfileImage = useUserStore((state) => state.setProfileImage);
   const userId = useUserStore((state) => state.userid);
-  const userid=localStorage.getItem("userid")
+
   const [selectedFile, setSelectedFile] = useState<File[]>([]);
-  const token = localStorage.getItem('token');
+
+   
   const { edgestore } = useEdgeStore();
 
+
   useEffect(() => {
-    const storedProfileImage = localStorage.getItem("profileImage");
-    if (storedProfileImage) {
-      setProfileImage(storedProfileImage);
+    if (typeof window !== 'undefined') {
+      const storedProfileImage = localStorage.getItem("profileImage");
+      if (storedProfileImage) {
+        setProfileImage(storedProfileImage);
+      }
     }
   }, [setProfileImage]);
 
   const handleUploads = async () => {
-    if (file) {
+    if (typeof window !== 'undefined') {
+      const userid = localStorage.getItem('userid');
+      const token = localStorage.getItem('token');
+  
+    if (file && userid && token) {
       try {
         const res = await edgestore.publicFiles.upload({
           file,
@@ -43,7 +51,7 @@ const Document = () => {
         };
        
         
-
+       
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/uploadImage`,
           data
@@ -55,30 +63,33 @@ const Document = () => {
           });
 
         const newProfileImage = response.data.uploadUrl.profilePicture;
-      
+        if (typeof window !== 'undefined') {
         localStorage.setItem("newprofileImage", newProfileImage);
         setProfileImage(newProfileImage);
+        }
       } catch (error) {
         console.error('Error uploading image:', error);
       }
     }
+  }
   };
 
   const handleUpload = async () => {
     if (selectedFile.length>0) {
      
-      console.log("Selected file:", selectedFile);
+     
      
       const formData = new FormData();
       selectedFile.forEach((file) => {
         formData.append("files", file);
       });
 
-      console.log('data',formData);
-      
-
       // formData.append("file", selectedFile);
       try {
+        if (typeof window !== 'undefined') {
+          const userid = localStorage.getItem('userid');
+          const token = localStorage.getItem('token');
+          if (userid && token) {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/uploadFile/${userid}`,
           formData,
@@ -100,6 +111,8 @@ const Document = () => {
           router.push('/home')
         }
         setSelectedFile([]);
+      }
+      }
       } catch (error) {
         console.log(error);
       }

@@ -5,7 +5,7 @@ import Image from 'next/image'
 import logo from "../../app/Logo.png"
 import {signIn,signOut, useSession} from "next-auth/react"
 
-const header = () => {
+const Header = () => {
 const {status}=useSession()
 
 
@@ -63,4 +63,4 @@ const {status}=useSession()
   )
 }
 
-export default header
+export default Header

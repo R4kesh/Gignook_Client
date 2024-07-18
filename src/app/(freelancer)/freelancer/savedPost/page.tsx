@@ -45,7 +45,7 @@ const SavedPost = () => {
     };
 
     fetchSavedPosts();
-  }, []);
+  }, [token]);
 
 
   const unsavePost = async (postId: string) => {

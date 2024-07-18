@@ -12,6 +12,7 @@ import {
   EmailIcon,
   EmailShareButton,
 } from 'react-share';
+import Image from 'next/image';
 
 interface PostShareProps {
   postId: string | null;
@@ -34,7 +35,9 @@ const PostShare: React.FC<PostShareProps> = ({ postId, setOpenShare }) => {
           <div className='flex justify-between items-center mb-3'>
             <h4 className='text-sm font-semibold'>Share post</h4>
             <div className='flex justify-end'>
-              <button onClick={handleClose}><img className='w-7' src="https://w7.pngwing.com/pngs/1008/558/png-transparent-computer-icons-button-close-angle-rectangle-logo-thumbnail.png" alt="close" /></button>
+              <button onClick={handleClose}><Image width={75}
+      height={75}
+ className='w-7' src="https://w7.pngwing.com/pngs/1008/558/png-transparent-computer-icons-button-close-angle-rectangle-logo-thumbnail.png" alt="close" /></button>
             </div>
           </div>
           <div className='flex w-[50%] justify-around'>
