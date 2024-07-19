@@ -1,7 +1,10 @@
 "use client"
 import { Edit, Bookmark, MessageSquare } from 'lucide-react';
 
-import LeftProfile from '@/components/freelancer/home/left'
+import dynamic from 'next/dynamic'
+const LeftProfile=dynamic(()=>import('@/components/freelancer/home/left'),{
+  ssr:false,
+})
 import React, { useEffect, useState } from 'react';
 import { toast } from "sonner"
 import axios from 'axios';
@@ -26,11 +29,12 @@ interface Post {
 const SavedPost = () => {
 
     const [savedPosts, setSavedPosts] = useState<Post[]>([]);
-    const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchSavedPosts = async () => {
       try {
+    const token = localStorage.getItem('token');
+
         const userId = localStorage.getItem('userid'); 
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/saved/posts/${userId}`, {
           headers: {
@@ -45,11 +49,15 @@ const SavedPost = () => {
     };
 
     fetchSavedPosts();
-  }, [token]);
+  }, []);
 
 
   const unsavePost = async (postId: string) => {
     try {
+    if (typeof window !== 'undefined') {
+
+    const token = localStorage.getItem('token');
+
       const userId = localStorage.getItem('userid'); 
       await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/unsave/posts/${userId}/${postId}`, {
         headers: {
@@ -57,6 +65,7 @@ const SavedPost = () => {
           'Authorization': `Bearer ${token}`,
         },
       });
+    }
       toast("Post unsaved Successfully")
       setSavedPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
     } catch (error) {

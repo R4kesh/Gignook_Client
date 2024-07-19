@@ -59,8 +59,10 @@ import MessageOutlinedIcon from '@mui/icons-material/MessageOutlined';
 const Header = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
-  const id=localStorage.getItem('userid')
-  const userid=localStorage.getItem('userid')
+ const [id,setId]=useState<string | null>()
+
+  
+ 
     const {status}=useSession()
 const router = useRouter()
 
@@ -74,13 +76,18 @@ const handleSignOut = async () => {
   };
 
   const handleLogout = () => {
+    if (typeof window !== 'undefined') {
     localStorage.clear();
+    }
 
     router.push('/login');
   };
 
   useEffect(() => {
-   
+    if (typeof window !== 'undefined') {
+
+    const userid=localStorage.getItem('userid')
+   setId(localStorage.getItem('userid'))
     socket.on(`notification_${userid}`, (data) => {
       setNotifications((prevNotifications) => [...prevNotifications, data]);
   
@@ -89,7 +96,8 @@ const handleSignOut = async () => {
     return () => {
       socket.off(`notification_${userid}`);
     };
-  }, [userid]);
+  }
+  }, []);
  
   
   return (

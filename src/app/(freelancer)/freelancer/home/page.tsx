@@ -4,12 +4,16 @@ import { Edit, Bookmark, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
-import LeftProfile from '@/components/freelancer/home/left';
+
 import { ScaleLoader } from 'react-spinners';
 import PostShare from '@/components/freelancer/home/postShare';
 import io from 'socket.io-client'
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import Image from 'next/image';
+import dynamic from 'next/dynamic'
+const LeftProfile=dynamic(()=>import('@/components/freelancer/home/left'),{
+  ssr:false,
+})
 
 const socket = io(`${process.env.NEXT_PUBLIC_BASE_URL}`);
 
@@ -36,12 +40,14 @@ const FreelancerHome = () => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [openShare, setOpenShare] = useState<{ isOpen: boolean, postId: string | null }>({ isOpen: false, postId: null });
-  const userid = localStorage.getItem("userid");
-  // const token = localStorage.getItem('token');
+  const [userid,setUserid]=useState<string|null>()
+
 
   const router = useRouter();
 
-
+useEffect(()=>{
+  setUserid(localStorage.getItem("userid"))
+},[])
 
   const fetchPosts = useCallback(async () => {
     if (isLoading) return;

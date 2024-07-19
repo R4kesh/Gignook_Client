@@ -1,5 +1,5 @@
 "use client"
-import Navbar from '@/components/home/navbar'
+
 import React, { useEffect, useRef,ChangeEvent,useState } from 'react'
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/userDetails';
@@ -7,6 +7,12 @@ import { useEdgeStore } from '@/lib/edgestore';
 import { toast } from "sonner"
 import axios from 'axios';
 import Image from 'next/image';
+import dynamic from 'next/dynamic'
+
+const Navbar=dynamic(()=>import('@/components/home/navbar'),{
+  ssr:false,
+})
+
 
 const Document = () => {
   const [file, setFile] = React.useState<File | null>(null);
@@ -23,8 +29,9 @@ const Document = () => {
 
 
   useEffect(() => {
+    let storedProfileImage
     if (typeof window !== 'undefined') {
-      const storedProfileImage = localStorage.getItem("profileImage");
+       storedProfileImage = localStorage.getItem("profileImage");
       if (storedProfileImage) {
         setProfileImage(storedProfileImage);
       }
@@ -32,9 +39,11 @@ const Document = () => {
   }, [setProfileImage]);
 
   const handleUploads = async () => {
+    let userid
+    let token
     if (typeof window !== 'undefined') {
-      const userid = localStorage.getItem('userid');
-      const token = localStorage.getItem('token');
+      userid = localStorage.getItem('userid');
+       token = localStorage.getItem('token');
   
     if (file && userid && token) {
       try {
@@ -86,9 +95,11 @@ const Document = () => {
 
       // formData.append("file", selectedFile);
       try {
+        let  userid 
+        let  token 
         if (typeof window !== 'undefined') {
-          const userid = localStorage.getItem('userid');
-          const token = localStorage.getItem('token');
+           userid = localStorage.getItem('userid');
+           token = localStorage.getItem('token');
           if (userid && token) {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/uploadFile/${userid}`,

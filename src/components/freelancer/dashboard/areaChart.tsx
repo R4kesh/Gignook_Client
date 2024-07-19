@@ -27,10 +27,12 @@ ChartJS.register(
   Legend
 );
 
-const id = localStorage.getItem('userid');
+
+
 
 const AreaChart: React.FC = () => {
   const [chartData, setChartData] = useState({
+
     labels: [] as string[],
     datasets: [
       {
@@ -46,6 +48,7 @@ const AreaChart: React.FC = () => {
   useEffect(() => {
     const fetchOrderData = async () => {
       try {
+        const id = localStorage.getItem('userid');
         const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/order_totals/${id}`);
         const data = res.data.dailyOrdersCount;
 
@@ -104,6 +107,7 @@ const BarChart: React.FC = () => {
   useEffect(() => {
     const fetchOrderData = async () => {
       try {
+        const id = localStorage.getItem('userid');
         const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/order_totals/${id}`);
         const data = res.data.monthlyOrdersCount;
 

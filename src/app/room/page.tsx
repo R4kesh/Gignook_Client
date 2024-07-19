@@ -9,15 +9,12 @@ import {
   ControlBar,
   useTracks,
 } from "@livekit/components-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Track } from "livekit-client";
 import { useSearchParams } from "next/navigation";
-import * as React from "react"
- import Image from 'next/image';
- import staticImage from '../../../../public/images/pexels-abdulwahab-alawadhi-5063630.jpg'
-import { Button } from "@/components/ui/button"
+import * as React from "react";
 
-export default function Page() {
+const PageContent: React.FC = () => {
   const params = useSearchParams();
 
   useEffect(() => {
@@ -31,7 +28,6 @@ export default function Page() {
 
   const [room, setRoom] = useState<string>();
   const [name, setName] = useState<string>();
-
   const [token, setToken] = useState("");
 
   async function getToken() {
@@ -52,40 +48,37 @@ export default function Page() {
   if (token === "") {
     return (
       <div className="bg-workspace-gray flex justify-center items-center w-full h-screen">
-      <div className="flex justify-center items-center w-full h-full">
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                getToken();
-              }}
-              className="flex flex-col  justify-center items-center"
+        <div className="flex justify-center items-center w-full h-full">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              getToken();
+            }}
+            className="flex flex-col  justify-center items-center"
+          >
+            <input
+              type="text"
+              placeholder="Enter Room Code..."
+              value={room}
+              className="mb-4 bg-custom-zinc text-black border-none rounded-lg ring-1 px-3 py-2 ring-gray-300"
+              onChange={(e) => setRoom(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Enter room name..."
+              value={name}
+              className="mb-4 ring-1 bg-custom-zinc text-black rounded-lg px-3 py-2 ring-gray-300"
+              onChange={(e) => setName(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="py-3 px-24 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
             >
-              <input
-                type="text"
-                placeholder="Enter Room Code..."
-                value={room}
-                className="mb-4 bg-custom-zinc text-black border-none rounded-lg ring-1 px-3 py-2 ring-gray-300"
-                onChange={(e) => setRoom(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Enter room name..."
-                value={name}
-                className="mb-4 ring-1 bg-custom-zinc text-black rounded-lg px-3 py-2 ring-gray-300"
-                onChange={(e) => setName(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="py-3 px-24 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-              >
-                Join
-              </button>
-            </form>
+              Join
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
-    
-    
     );
   }
 
@@ -109,24 +102,34 @@ export default function Page() {
       <ControlBar />
     </LiveKitRoom>
   );
-    }
+};
 
-    function MyVideoConference() {
-        // useTracks returns all camera and screen share tracks. If a user
-        // joins without a published camera track, a placeholder track is returned.
-        const tracks = useTracks(
-          [
-            { source: Track.Source.Camera, withPlaceholder: true },
-            { source: Track.Source.ScreenShare, withPlaceholder: false },
-          ],
-          { onlySubscribed: false }
-        );
-        return (
-          <GridLayout
-            tracks={tracks}
-            style={{ height: "calc(100vh - var(--lk-control-bar-height))" }}
-          >
-            <ParticipantTile />
-          </GridLayout>
-        );
-      }
+function MyVideoConference() {
+  // useTracks returns all camera and screen share tracks. If a user
+  // joins without a published camera track, a placeholder track is returned.
+  const tracks = useTracks(
+    [
+      { source: Track.Source.Camera, withPlaceholder: true },
+      { source: Track.Source.ScreenShare, withPlaceholder: false },
+    ],
+    { onlySubscribed: false }
+  );
+  return (
+    <GridLayout
+      tracks={tracks}
+      style={{ height: "calc(100vh - var(--lk-control-bar-height))" }}
+    >
+      <ParticipantTile />
+    </GridLayout>
+  );
+}
+
+const Page: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PageContent />
+    </Suspense>
+  );
+};
+
+export default Page;

@@ -1,5 +1,8 @@
 "use client";
-import LeftProfile from '@/components/freelancer/home/left';
+import dynamic from 'next/dynamic'
+const LeftProfile=dynamic(()=>import('@/components/freelancer/home/left'),{
+  ssr:false,
+})
 import axios from 'axios';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -26,10 +29,11 @@ const Payment = () => {
   const [paymentHistory, setPaymentHistory] = useState<Payment[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const token = localStorage.getItem('token');
+  
   useEffect(() => {
     const fetchPaymentHistory = async () => {
       const id = localStorage.getItem('userid');
+      const token = localStorage.getItem('token');
       if (id) {
         try {
           const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/paymentHistory/${id}`,{
@@ -46,7 +50,7 @@ const Payment = () => {
     };
 
     fetchPaymentHistory();
-  }, [token]);
+  }, []);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

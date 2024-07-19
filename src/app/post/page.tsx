@@ -1,11 +1,16 @@
 "use client";
-import Navbar from "@/components/home/navbar";
+
 import React, { useState, ChangeEvent } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import Image from "next/image";
+import dynamic from 'next/dynamic'
+
+const Navbar=dynamic(()=>import('@/components/home/navbar'),{
+  ssr:false,
+})
 
 interface ProjectData {
   title: string;

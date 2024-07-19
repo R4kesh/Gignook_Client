@@ -62,6 +62,7 @@ import {
     },
   }));
 
+
 const Navbar = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);

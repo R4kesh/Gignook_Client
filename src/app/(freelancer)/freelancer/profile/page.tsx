@@ -75,14 +75,18 @@ const Profile:React.FC = () => {
   const [formData, setFormData] = useState<User>(initialUserState);
   const { edgestore } = useEdgeStore();
   const router=useRouter()
-  const email = localStorage.getItem("email");
+
   const [progresses, setProgress] =useState(0)
   const [showProgress, setShowProgress] = useState(false);
   const [works, setWorks] = useState<Work[]>([]);
-  const token = localStorage.getItem('token');
+  const [token,setToken]=useState<string | null>(null)
 
 
   useEffect(()=>{
+    if (typeof window !== 'undefined') {
+
+      setToken(localStorage.getItem('token'))
+     }
     const timer = setTimeout(() => setProgress(1), 500)
     return () => clearTimeout(timer)
   },[])
@@ -242,7 +246,7 @@ const Profile:React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File[]>([]);
   const [fileUploaded, setFileUploaded] = useState(false);
   const [postId,setPostId]=useState('')
-  const userid=localStorage.getItem("userid")
+  // 
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const handleUploads = async () => {
     if (selectedFile.length>0) {
@@ -258,6 +262,9 @@ const Profile:React.FC = () => {
       setFileUploaded(true);
       
       try {
+    if (typeof window !== 'undefined') {
+
+        const userid=localStorage.getItem("userid")
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/postWork/${userid}`,
           formData,
@@ -276,7 +283,7 @@ const Profile:React.FC = () => {
           
         }
        
-        
+      }
       } catch (error) {
         console.log(error);
       }

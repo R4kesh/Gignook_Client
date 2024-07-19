@@ -1,11 +1,16 @@
 "use client"
-import Navbar from '@/components/home/navbar';
+
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Image from 'next/image';
+import dynamic from 'next/dynamic'
+
+const Navbar=dynamic(()=>import('@/components/home/navbar'),{
+  ssr:false,
+})
 
 interface InterestedUser {
   _id: string;
@@ -28,10 +33,11 @@ const Posts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const router=useRouter()
-  const token = localStorage.getItem('token');
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+  const token = localStorage.getItem('token');
+
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/postList/${id}`, {
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +59,7 @@ const Posts = () => {
     if (id) {
       fetchPosts();
     }
-  }, [id,token]);
+  }, [id]);
 
   if (loading) {
     return <div>Loading...</div>;

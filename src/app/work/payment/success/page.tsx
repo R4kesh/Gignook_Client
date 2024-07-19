@@ -1,6 +1,6 @@
 "use client"
-import React, { useEffect, useState } from 'react';
-import { useRouter,useSearchParams } from 'next/navigation';
+import React, { useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
@@ -16,15 +16,14 @@ import axios from 'axios';
 import { useFeedbackStore } from '@/store/feedback';
 import Image from 'next/image';
 
-const PaymentSuccessPage: React.FC = () => {
+const PaymentSuccessPageContent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [value, setValue] = useState<number | null>(1);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState("");
-  const token = localStorage.getItem('token');
-  
+
   const handleContinueShopping = () => {
     router.push('/home');
   };
@@ -41,49 +40,46 @@ const PaymentSuccessPage: React.FC = () => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData.entries());
-    
 
     try {
-  const workId = localStorage.getItem('woId');
-  const freelancerId = localStorage.getItem('frId');
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token');
+        const workId = localStorage.getItem('woId');
+        const freelancerId = localStorage.getItem('frId');
 
-      console.log(' workId', workId,'freelancerId',freelancerId,'rating',value,'feedback',feedback);
-      
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/feedback`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        console.log('workId', workId, 'freelancerId', freelancerId, 'rating', value, 'feedback', feedback);
 
-        workId,
-        freelancerId,
-        userId: localStorage.getItem('userid'),
-        rating: value,
-        feedback,
-      });
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/feedback`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          workId,
+          freelancerId,
+          userId: localStorage.getItem('userid'),
+          rating: value,
+          feedback,
+        });
 
-      console.log('Feedback submitted:', response.data);
-      handleClose();
-      localStorage.removeItem('woId');
-      localStorage.removeItem('frId');
-
-      router.push('/home')
+        console.log('Feedback submitted:', response.data);
+        handleClose();
+        localStorage.removeItem('woId');
+        localStorage.removeItem('frId');
+      }
+      router.push('/home');
     } catch (error) {
       console.error('Error submitting feedback:', error);
       // Handle error state or display error message
     }
   };
-  
-  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg text-center">
         <Image
-        width={16}
-        height={16}
-  
-          src="/img/success.png" 
+          width={64}
+          height={64}
+          src="/img/success.png"
           alt="Success"
           className="w-16 h-16 mx-auto mb-4"
         />
@@ -97,13 +93,11 @@ const PaymentSuccessPage: React.FC = () => {
         >
           Home
         </button>
-        
+
         <Button variant="outlined" onClick={handleClickOpen}>
           Feedback
         </Button>
-        
-        
-        
+
         <Dialog
           open={open}
           onClose={handleClose}
@@ -138,7 +132,7 @@ const PaymentSuccessPage: React.FC = () => {
               fullWidth
               variant="standard"
               value={feedback}
-              onChange={(e:any) => setFeedback(e.target.value)}
+              onChange={(e: any) => setFeedback(e.target.value)}
             />
           </DialogContent>
           <DialogActions>
@@ -148,6 +142,14 @@ const PaymentSuccessPage: React.FC = () => {
         </Dialog>
       </div>
     </div>
+  );
+};
+
+const PaymentSuccessPage: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PaymentSuccessPageContent />
+    </Suspense>
   );
 };
 

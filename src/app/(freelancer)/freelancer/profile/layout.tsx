@@ -1,5 +1,8 @@
-import Header from "@/components/freelancer/header";
 
+import dynamic from 'next/dynamic'
+const  Header =dynamic(()=>import("@/components/freelancer/header"),{
+  ssr:false,
+})
 const HomePageLayout = ({ children }: { children: React.ReactNode }) => {
 
     return (

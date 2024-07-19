@@ -1,7 +1,7 @@
 "use client"
 import Brief from '@/components/home/brief';
 import Category from '@/components/home/category';
-import Navbar from '@/components/home/navbar';
+
 import { category } from '@/lib/categories';
 import axios from 'axios';
 import React,{useEffect,useState,useRef} from 'react';
@@ -14,6 +14,13 @@ import { useRouter } from 'next/navigation';
 import io,{Socket} from 'socket.io-client'
 import useDebounce from '@/hooks/useDebounce';
 import Image from 'next/image';
+import dynamic from 'next/dynamic'
+
+const Navbar=dynamic(()=>import('@/components/home/navbar'),{
+  ssr:false,
+})
+
+
 
 interface Freelancer {
   _id: string;

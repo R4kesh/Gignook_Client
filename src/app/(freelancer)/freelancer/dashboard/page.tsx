@@ -1,10 +1,13 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import LeftProfile from '@/components/freelancer/home/left';
+
 import Card from '@/components/freelancer/dashboard/card';
 import axios from 'axios';
 import { AreaChart, BarChart } from '@/components/freelancer/dashboard/areaChart';
-const id=localStorage.getItem('userid')
+import dynamic from 'next/dynamic'
+const LeftProfile=dynamic(()=>import('@/components/freelancer/home/left'),{
+  ssr:false,
+})
 
 const Dashboard = () => {
   const [orderStats, setOrderStats] = useState({
@@ -16,8 +19,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchOrderStats = async () => {
       try {
+        if (typeof window !== 'undefined') {
+          const id = localStorage.getItem('userid');
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/order-stats/${id}`);
         setOrderStats(response.data);
+        }
       } catch (error) {
         console.error('Error fetching order stats:', error);
       }

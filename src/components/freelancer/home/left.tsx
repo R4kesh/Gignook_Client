@@ -1,14 +1,32 @@
 "use client"
-import React from 'react'
+import React, { useEffect,useState } from 'react'
 import { Edit, Bookmark, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 
 const LeftProfile = () => {
-    const profileImage=localStorage.getItem("profileImage")
-  const email = localStorage.getItem("email");
-  const name = localStorage.getItem("name");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [name, setName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedProfileImage = localStorage.getItem("profileImage");
+      const storedEmail = localStorage.getItem("email");
+      const storedName = localStorage.getItem("name");
+
+      if (storedProfileImage) {
+        setProfileImage(storedProfileImage);
+      }
+      if (storedEmail) {
+        setEmail(storedEmail);
+      }
+      if (storedName) {
+        setName(storedName);
+      }
+    }
+  }, []);
 
   const router=useRouter()
 

@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import LeftProfile from '@/components/freelancer/home/left';
-
+import dynamic from 'next/dynamic'
+const LeftProfile=dynamic(()=>import('@/components/freelancer/home/left'),{
+  ssr:false,
+})
 interface User {
   firstname: string;
   email: string;
@@ -38,11 +40,12 @@ import {
 
 const Orders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const id = localStorage.getItem('userid'); // Assume the freelancer ID is stored in local storage
+ 
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
+        const id = localStorage.getItem('userid');
         const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/freelancer/orders/${id}`);
         setOrders(res.data);
       } catch (error) {
@@ -51,7 +54,7 @@ const Orders: React.FC = () => {
     };
 
     fetchOrders();
-  }, [id,orders]);
+  }, [orders]);
 
   const handleAction = async (orderId: string) => {
     try {

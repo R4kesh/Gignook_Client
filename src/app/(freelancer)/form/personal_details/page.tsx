@@ -1,9 +1,13 @@
 "use client"
-import Navbar from '@/components/home/navbar';
+
 import React,{useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/userDetails';
 import axios from 'axios'
+import dynamic from 'next/dynamic'
+const Navbar=dynamic(()=>import('@/components/home/navbar'),{
+  ssr:false,
+})
 
 
 interface FormData {
