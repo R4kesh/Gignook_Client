@@ -26,8 +26,8 @@ const Featured = () => {
           </div>
         </div>
         <div className="right h-80 mt-8 md:mt-0">
-          <Image    width={75}
-      height={75}
+          <Image    width={800}
+      height={900}
  src="/img/man.png" alt="" className="h-max w-full md:w-auto object-contain" />
         </div>
       </div>

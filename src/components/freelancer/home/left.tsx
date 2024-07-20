@@ -35,7 +35,7 @@ const LeftProfile = () => {
    
     <div className="w-1/4 h-1/2 p-4 border shadow-lg rounded-lg flex flex-col items-center sticky top-4 bg-white">
     <Image
-      src={profileImage!}
+      src={profileImage || '/default-profile-pic.jpg'}
       alt="Profile Icon"
       width={100}
       height={100}

@@ -296,8 +296,8 @@ useEffect(() => {
               >
                 <Image
                   src={freelancer.profilePicture}
-                  width={100}
-      height={75}
+                  width={300}
+      height={200}
 
                   alt={`${freelancer.firstname} ${freelancer.lastname}`}
                   className="w-full h-40 object-cover mb-2 rounded-md"
@@ -347,8 +347,8 @@ useEffect(() => {
               <div key={index} className="bg-gray-100 p-4 rounded-md">
                 <Image
                   src={freelancer.images}
-                  width={75}
-                  height={75}
+                  width={100}
+                  height={100}
                   alt={freelancer.title}
                   className="w-full h-40 object-cover mb-2 rounded-md"
                 />
@@ -358,6 +358,8 @@ useEffect(() => {
                 <div className="flex items-center mb-2">
                   <Image
                     src={freelancer.userId.profilePicture}
+                    width={75}
+                    height={75}
                     alt={`${freelancer.userId.firstname} profile`}
                     className="w-8 h-8 rounded-full mr-2"
                   />

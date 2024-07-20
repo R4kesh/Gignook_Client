@@ -12,7 +12,6 @@ const AuthRoute = ({ children }:AuthRouteProps) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
    
-    
     if (token) {
       router.push('/home');
     }else{

@@ -181,7 +181,7 @@ useEffect(()=>{
               </div>
               <div className="mt-4">
                 <Image
-                  src={post.images[0]}
+                  src={post.images[0] || '/default-profile-pic.jpg'}
                   alt="Bid Photo"
                   width={800}
                   height={300}

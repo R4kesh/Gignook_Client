@@ -59,7 +59,7 @@ interface Work {
   link: string;
   cost: number;
   category: string;
-  images: File | null;
+  images: string;
   title:string;
 }
 
@@ -680,7 +680,7 @@ const Profile:React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 {works.map((work, index) => (
                   <div key={index} className="bg-gray-100 p-4 rounded-md">
-                    {typeof work.images === 'string' && (
+                   
   <Image
     width={75}
     height={75}
@@ -688,7 +688,7 @@ const Profile:React.FC = () => {
     alt={work.title}
     className="w-full h-40 object-cover mb-2 rounded-md"
   />
-)}
+
                     <h3 className="text-lg font-semibold mb-2">{work.title}</h3>
                     <p className="text-gray-600 mb-1">{work.description}</p>
                     <p className="text-gray-500 text-xs"> ₹{work.cost}</p>

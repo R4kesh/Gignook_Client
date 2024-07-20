@@ -179,8 +179,8 @@ try {
           <div className="w-2/3 flex flex-col gap-5">
             <h1 className="text-xl font-bold">{freelancer.title}</h1>
             <div className="flex items-center gap-2.5">
-              <Image width={8}
-      height={8}
+              <Image width={75}
+      height={75}
  src={freelancer.userId.profilePicture} alt="" className="w-8 h-8 rounded-full object-cover" />
               <span className="font-bold">{freelancer.userId.firstname}</span>
 
@@ -190,8 +190,8 @@ try {
                 <CarouselContent>
                 {freelancer.images.map((image, index) => (
         <CarouselItem key={index}>
-          <Image width={75}
-      height={75}
+          <Image width={500}
+      height={300}
  src={image} alt={`Freelancer work ${index + 1}`} className="w-full h-auto object-cover" />
         </CarouselItem>
       ))}
@@ -206,28 +206,18 @@ try {
             <p className="text-base">Welcome to my Gig <br />{"I'm"} an energetic , adept at crafting stunning, functional websites from design concepts. <br />
             My expertise includes:</p>
             <h1 className="text-lg font-semibold mb-2"> {freelancer.userId.service.join(',')} </h1>
-            {/* <ul className="list-disc ml-5 text-base">
-              <li>Front-end Web Dev: Specializing in ReactJS, I excel in HTML5, CSS3, and JavaScript. Crafting responsive web and mobile templates for seamless cross-device experiences.</li>
-              <li>Design Conversion: Skilled in PSD, XD, Sketch, or Figma design-to-code conversion. Meticulously ensuring pixel-perfect results.</li>
-            </ul> */}
+         
             <p className="text-base">Why Me?</p>
             <h1 className="text-lg font-semibold mb-2">{freelancer.userId.description} 🚀</h1>
 
             <h2 className="text-lg font-semibold mb-2">About The Seller</h2>
             <div className="flex items-center gap-4">
-              <Image width={12}
-      height={12}
- src={freelancer.userId.profilePicture} alt="" className="w-12 h-12 rounded-full" />
+              <Image width={75}
+      height={75}
+ src={freelancer.userId.profilePicture} alt="" className="w-8 h-8 rounded-full mr-2" />
               <div className="flex flex-col">
                 <span className="font-semibold text-lg">{freelancer.userId.firstname}</span>
-                {/* <div className="flex items-center gap-1">
-                  <img src="/img/star.png" alt="" className="w-4 h-4" />
-                  <img src="/img/star.png" alt="" className="w-4 h-4" />
-                  <img src="/img/star.png" alt="" className="w-4 h-4" />
-                  <img src="/img/star.png" alt="" className="w-4 h-4" />
-                  <img src="/img/star.png" alt="" className="w-4 h-4" />
-                  <span className="ml-1">5</span>
-                </div> */}
+               
                 <Link href="https://vikas-parmar.github.io/" target="_blank">
                   <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">Contact Me</button>
                 </Link>
@@ -274,10 +264,10 @@ try {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <Image
-                width={10}
-                height={10}
+                width={400}
+                height={100}
           
-                  src={review.workId.images[0]} // Placeholder for the logo image
+                  src={review.workId.images[0]} 
                   alt={review.workId.images[0]}
                   className="w-10 h-10 mr-2"
                 />

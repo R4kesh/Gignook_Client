@@ -18,7 +18,7 @@ const Landing = () => {
     <div className="flex flex-col gap-4 flex-2">
       <h1 className="font-bold  mb-2">The best part? Everything.</h1>
       <div className="flex items-center gap-2 font-medium text-gray-600">
-        <Image src="/img/check.png" alt="" className="w-6 h-6" width={6}
+        <Image src="/img/check.png" alt="" width={6}
       height={6}/>
         Stick to your budget
       </div>
