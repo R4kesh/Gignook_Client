@@ -77,7 +77,7 @@ const Login = () => {
          
      
         toast.success("Login Completed",{
-          position:"top-center",
+          position:"top-center", 
           
         })
         const fullName = `${user.firstname} ${user.lastname}`;
