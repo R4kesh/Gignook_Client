@@ -296,7 +296,7 @@ useEffect(() => {
               >
                 <Image
                   src={freelancer.profilePicture}
-                  width={300}
+                  width={300}    
       height={200}
 
                   alt={`${freelancer.firstname} ${freelancer.lastname}`}
