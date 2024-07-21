@@ -11,6 +11,7 @@ export const NextAuthProvider=({children}: NextAuthProviderProps)=>{
 
     return <SessionProvider>{children}</SessionProvider>
     
+    
 }
 
 
