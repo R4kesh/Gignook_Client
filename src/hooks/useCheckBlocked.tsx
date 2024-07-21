@@ -14,7 +14,7 @@ const useCheckBlockedStatus = () => {
     const checkBlockedStatus = async () => {
       if (token) {
         try {
-          const response = await axios.get(`http://localhost:5001/api/user/allUser/${userid}`);
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/allUser/${userid}`);
           if (response.data.data.isBlocked) {
             console.log('responsesss',response.data.data.isBlocked);
             

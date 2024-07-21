@@ -13,7 +13,7 @@ import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import MessageOutlinedIcon from '@mui/icons-material/MessageOutlined';
-const socket = io('http://localhost:5001');
+const socket = io(`${process.env.NEXT_PUBLIC_BASE_URL}`);
 
 import {
   Cloud,
