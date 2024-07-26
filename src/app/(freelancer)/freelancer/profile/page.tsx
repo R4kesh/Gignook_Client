@@ -682,9 +682,9 @@ const Profile:React.FC = () => {
                   <div key={index} className="bg-gray-100 p-4 rounded-md">
                    
   <Image
-    width={75}
-    height={75}
-    src={work.images}
+    width={200}
+    height={100}
+    src={work.images[0]}
     alt={work.title}
     className="w-full h-40 object-cover mb-2 rounded-md"
   />

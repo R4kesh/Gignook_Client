@@ -5,25 +5,31 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
 import Input from "@/components/input/input";
-import { AttachementUpload } from "@/components/chat/AttachementUpload";
+import { Attachement } from "@/components/chat/AttachementUpload";
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import { ImagePreview } from "@/components/chat/imagePreView";
+
 
 interface User {
   _id: number;
   firstname: string;
   email: string;
   fullName:string
+  profilePicture:string
 }
 
 
 interface Message {
-  user: { id: string };
+  user: { id: string,email:any,fullname:any };
   message: string;
+  createdAt:any
 }
 
 interface MessagesState {
   messages: Message[];
   receiver?: any;
   conversationId?: string;
+  time:any
 }
 
 interface Conversation {
@@ -42,9 +48,10 @@ export default function Chat() {
   
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<MessagesState>({ messages: [] });
+  const [messages, setMessages] = useState<MessagesState>({ messages: [],time:null });
   const [users, setUsers] = useState<UserItem[]>([]);
-  const sender = localStorage.getItem('userid')!;
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  
   const [socket, setSocket] = useState<Socket | null>(null);
   const set = localStorage.getItem('userid');
 const id=localStorage.getItem('userid')
@@ -62,6 +69,11 @@ const id=localStorage.getItem('userid')
     setId(id)
   }, [id]);
 
+  const handleVideoCallClick = () => {
+    router.push("/room");
+  };
+
+
   useEffect(() => {
     socket?.emit('addUser', id);
     socket?.on('getUsers', users => {
@@ -70,7 +82,7 @@ const id=localStorage.getItem('userid')
     socket?.on('getMessage', data => {
       setMessages(prev => ({
         ...prev,
-        messages: [...prev.messages, { user: data.user, message: data.message }]
+        messages: [...prev.messages, { user: data.user, message: data.message,createdAt:data.createdAt }]
       }));
     });
   }, [socket,id]);
@@ -103,6 +115,8 @@ const id=localStorage.getItem('userid')
           'Authorization': `Bearer ${token}`
         }
       });
+      console.log('conv',res.data);
+      
       
       setUsers(res.data)
     }
@@ -116,9 +130,10 @@ const id=localStorage.getItem('userid')
         'Authorization': `Bearer ${token}`
       }
     });
-
+    console.log('frtch',res.data);
     
-    setMessages({ messages: res.data, receiver, conversationId })
+    
+    setMessages({ messages: res.data, receiver, conversationId,time: res.data.createdAt })
     console.log('messz',messages,'conver',conversationId);
   
   }
@@ -131,13 +146,15 @@ const id=localStorage.getItem('userid')
       senderId: id,
       receiverId: messages?.receiver?.receiverId,
       message,
-      conversationId: messages?.conversationId
+      conversationId: messages?.conversationId,
+      timestamp: new Date().toISOString(),
     });
    const res= await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/message`, {
       conversationId: messages?.conversationId,
       senderId: id,
       message,
-      receiverId: messages?.receiver?.receiverId
+      receiverId: messages?.receiver?.receiverId,
+      timestamp: new Date().toISOString(),
     }, {
       headers: {
         'Content-Type': 'application/json',
@@ -167,7 +184,7 @@ const id=localStorage.getItem('userid')
     router.push("/");
   };
 
-  console.log('messages',messages);
+ 
   
   
 
@@ -194,12 +211,20 @@ const id=localStorage.getItem('userid')
         <div className='mx-14 mt-10'>
           <div className='text-primary text-lg'>Messages</div>
           <div>
-            {conversations.length > 0 ? conversations.map(({ conversationId, user }) => {
+            {conversations.length > 0 ? conversations.sort((a: any, b: any) => {
+                    if (!a.lastMessagedTime) return 1;
+                    if (!b.lastMessagedTime) return -1;
+                    return (
+                      new Date(b.lastMessagedTime).getTime() -
+                      new Date(a.lastMessagedTime).getTime()
+                    );
+                  }).map(({ conversationId, user }) => {
               return (
-              <div key={conversationId} className='flex items-center py-8 border-b border-b-slate-950-300'>
-                <div className='cursor-pointer flex items-center' onClick={() => fetchMessages(conversationId, user)}>
-                  <div><Image  width={15}
-      height={15} src="" alt="" className="w-15 h-15 rounded-full p-1 border border-primary" /></div>
+              <div key={conversationId} 
+              className={`flex items-center py-8 border-b border-b-slate-950-300 ${selectedConversationId === conversationId ? 'bg-blue-200' : ''}`}>
+                <div className='cursor-pointer flex items-center' onClick={() =>{setSelectedConversationId(conversationId); fetchMessages(conversationId, user)}}>
+                  <div><Image  width={75}
+      height={75} src={user.profilePicture} alt="" className="w-15 h-15 rounded-full p-1 border border-primary" /></div>
                   <div className='ml-6'>
                     
                     <h3 className='text-lg font-semibold'>{user.firstname}</h3>
@@ -219,9 +244,19 @@ const id=localStorage.getItem('userid')
             <div className='cursor-pointer'><Image src={messages?.receiver?.profilePicture} alt="" width={60} height={60} className="rounded-full" /></div>
             <div className='ml-6 mr-auto'>
              {/* ///////////////////////////////////////////// */}
+          
               <h3 className='text-lg'>{messages?.receiver?.fullName}</h3>
               <p className='text-sm font-light text-gray-600'>{messages?.receiver?.email}</p>
+             
             </div>
+            <button
+     
+      color="primary"
+     
+      onClick={handleVideoCallClick}
+    >
+     <VideoCallIcon />
+    </button>
             <div className='cursor-pointer'>
              
             </div>
@@ -230,13 +265,54 @@ const id=localStorage.getItem('userid')
         <div className='h-3/4 w-full overflow-scroll shadow-sm'>
           <div className='p-14'>
             
-            {messages?.messages?.length > 0 ? messages.messages.map((message,index) => {
-              
+          {messages?.messages?.length > 0 ? messages.messages.map((message, index) => {
+    let date: Date;
+
+    if (typeof message.createdAt === "string") {
+        date = new Date(message.createdAt);
+    } else if (message.createdAt instanceof Date) {
+        date = message.createdAt;
+    } else {
+        date = new Date();
+    }
+
+    let formattedTime = "";
+    if (!isNaN(date.getTime())) {
+        formattedTime = date.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    }
+
+    let isImage;
+    if (
+      message.message.endsWith(".png") ||
+      message.message.endsWith(".jpg") ||
+      message.message.endsWith(".jpeg") ||
+      message.message.endsWith(".pdf")
+    ) {
+      isImage = message.message;
+    }
+
+
              return (
               
               
               <div key={index} className={`max-w-[40%] rounded-b-xl p-4 mb-6 ${id === message.user.id ? 'bg-blue-500 text-white rounded-tl-xl ml-auto' : 'bg-gray-300 text-black rounded-tr-xl'} `}>
-              {message.message}
+
+
+              {/* {message.message} */}
+              {isImage ? (
+                        <ImagePreview previewImage={message.message}/>
+                        
+                      ) : (
+                        message.message
+                      )}
+
+
+              <p className="text-black text-xs pl-28 text-left">
+                        {formattedTime}
+                      </p>
             </div>
 )
 }) : <div className='text-center text-lg font-semibold mt-24'>No Messages or No Conversation Selected</div>}
@@ -266,8 +342,9 @@ const id=localStorage.getItem('userid')
               <line x1="9" y1="12" x2="15" y2="12" />
               <line x1="12" y1="9" x2="12" y2="15" />
             </svg> */}
-            <AttachementUpload />
+            
           </div>
+          <Attachement conversationId={messages.conversationId} receiver={messages?.receiver?.receiverId}    />
         </div>
         }
       </div>
@@ -278,7 +355,7 @@ const id=localStorage.getItem('userid')
             <div key={userId} className='flex items-center py-8 border-b border-b-gray-300'>
               <div className='cursor-pointer flex items-center' onClick={() => fetchMessages("new", user)}>
                 <div><Image  width={75}
-      height={75} src="" alt="" className="w-15 h-15 rounded-full p-1 border border-primary" /></div>
+      height={75} src={user.profilePicture} alt="" className="w-15 h-15 rounded-full p-1 border border-primary" /></div>
                 <div className='ml-6'>
                   <h3 className='text-lg font-semibold'>{user?.fullName}</h3>
                   <p className='text-sm font-light text-gray-600'>{user?.email}</p>

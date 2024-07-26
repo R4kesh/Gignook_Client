@@ -15,6 +15,8 @@ import io,{Socket} from 'socket.io-client'
 import useDebounce from '@/hooks/useDebounce';
 import Image from 'next/image';
 import dynamic from 'next/dynamic'
+import Rating from '@mui/material/Rating';
+import Stack from '@mui/material/Stack';
 
 const Navbar=dynamic(()=>import('@/components/home/navbar'),{
   ssr:false,
@@ -149,6 +151,7 @@ useEffect(() => {
             'Authorization': `Bearer ${token}`
           }});
        
+        console.log('workkk',response.data.data);
         
         setWorkData(response.data.data);
         }
@@ -307,6 +310,12 @@ useEffect(() => {
                     {freelancer.firstname} {freelancer.lastname}
                   </h3>
              
+
+
+                  <Stack spacing={1}>
+      
+      <Rating name="half-rating-read" defaultValue={freelancer.rating} precision={0.5} readOnly />
+    </Stack>
                 </div>
                 <p className="text-gray-1000 font-mono">
                   {freelancer.service.join(', ')}
@@ -346,8 +355,8 @@ useEffect(() => {
             {workData.map((freelancer, index) => (
               <div key={index} className="bg-gray-100 p-4 rounded-md">
                 <Image
-                  src={freelancer.images}
-                  width={100}
+                  src={freelancer.images[0]}
+                  width={200}
                   height={100}
                   alt={freelancer.title}
                   className="w-full h-40 object-cover mb-2 rounded-md"

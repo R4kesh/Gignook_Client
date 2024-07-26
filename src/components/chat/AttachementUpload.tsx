@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,53 +8,139 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-export function AttachementUpload() {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-      {/* <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-circle-plus" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <circle cx="12" cy="12" r="9" />
-              <line x1="9" y1="12" x2="15" y2="12" />
-              <line x1="12" y1="9" x2="12" y2="15" />
-            </svg> */}
-            <button className="cursor-pointer">Add</button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-          <p>Make changes to your profile here. Click save when you&apos;re done.</p>
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import attachement from "../../../public/img/cloud-computing.png";
+import Image from "next/image";
+import cloud from "../../../public/img/cloud-computing.png";
+import { useEdgeStore } from "../../lib/edgestore";
+import axios from "axios";
+// import socket from "../../lib/Socket"; 
+import socket from "../../lib/Socket"
 
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="name" className="text-right">
-              Name
-            </label>
-            <input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
+
+export function Attachement({
+  conversationId,
+  receiver,
+}: {
+  conversationId: any;
+  receiver: any;
+}
+) {
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const senderId=localStorage.getItem("userid")
+  const token=localStorage.getItem("token")
+  const [file, setFile] = React.useState<File>();
+  const [isOpen, setIsOpen] = React.useState(false);
+  console.log("hjvgkzdfshvgajhsdfhjfdghjdf",  conversationId,
+
+  receiver,);
+
+
+  
+  const { edgestore } = useEdgeStore();
+
+  const handleUpload = async () => {
+    if (file) {
+      const res = await edgestore.publicFiles.upload({
+        file,
+        onProgressChange: (progress) => {
+          
+          console.log(progress);
+        },
+      });
+      socket.emit("sendMessage", {
+        conversationId: conversationId,
+        senderId: senderId,
+        receiverId: receiver,
+        message: res.url,
+        timestamp: new Date().toISOString(),
+      });
+      console.log("receiver", receiver);
+      const data = {
+        message: res.url,
+        senderId: senderId,
+        reciverId: receiver,
+        conversationId: conversationId,
+        timestamp: new Date().toISOString(),
+      };
+
+      try {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/addAttachentToChat`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response) {
+          console.log("response>>attachemnt", response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      // Close the dialog
+      setIsOpen(false);
+    }
+  };
+
+  return (
+    <>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <div onClick={() => setIsOpen(true)}>
+            <Image
+              height={35}
+              width={35}
+              className="pt-3"
+              src={attachement}
+              alt=""
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="username" className="text-right">
-              Username
-            </label>
-            <input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px] bg-custom-zinc">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              Upload Attachements
+            </DialogTitle>
+            <DialogDescription className="text-white">
+              Here Where You can Add Images
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div
+              onClick={() => fileRef.current?.click()}
+              className="w-80 bg-chat ml-5 h-48 "
+            >
+              <div className="ml-28 mt-10">
+                <Image src={cloud} alt="" height={90} width={70} />
+                <input
+                  type="file"
+                  id="image"
+                  className="bg-slate-100 rounded-lg py-3 px-3 hidden"
+                  ref={fileRef}
+                  onChange={(e) => {
+                    setFile(e.target.files?.[0]);
+                  }}
+                />
+              </div>
+              <p className="text-center text-white">
+                Select this and add a file Here
+              </p>
+            </div>
+            <button
+              onClick={handleUpload}
+              className="bg-sky-500 px-3 py-3 text-white"
+              type="submit"
+            >
+              Save changes
+            </button>
           </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
+          <DialogFooter></DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }

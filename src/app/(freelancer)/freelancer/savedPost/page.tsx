@@ -42,6 +42,8 @@ const SavedPost = () => {
             'Authorization': `Bearer ${token}`
           },
         });
+        console.log('poo',response.data.savedPosts);
+        
         setSavedPosts(response.data.savedPosts);
       } catch (error) {
         console.error('Error fetching saved posts:', error);

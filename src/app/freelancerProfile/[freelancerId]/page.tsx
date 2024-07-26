@@ -123,7 +123,7 @@ try {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     }})
-  
+    console.log('fee',res.data);
   setFeedback(res.data)
   
  
@@ -167,8 +167,8 @@ try {
     src={freelancer?.profilePicture!} // Replace with actual path
     alt="Profile Picture"
     className="w-full h-full rounded-full"
-    width={75}
-    height={75}
+    width={300}
+    height={200}
 
   />
 </div>
@@ -234,8 +234,8 @@ try {
               src={data.images[0]}
               alt={data.title}
               className="w-full h-32 object-cover mb-2 rounded"
-              width={32}
-              height={32}
+              width={200}
+              height={80}
         
             />
             <h3 className="text-lg font-bold mb-1">{data.title}</h3>
@@ -260,8 +260,8 @@ try {
           <div className="bg-white p-6 rounded-lg shadow-lg sticky top-6">
             <div className="flex items-center gap-4 mb-4">
               <Image
-                width={12}
-                height={12}
+                width={200}
+                height={200}
           
                 src={freelancer?.profilePicture!} 
                 alt="Profile Picture"
@@ -303,8 +303,7 @@ try {
               </div>
               <div className="ml-3">
                 <h2 className="font-bold">{review.userId.firstname} {review.userId.lastname}</h2>
-                {/* Assuming the user's country is part of userId */}
-                {/* <p className="text-sm text-gray-600">{review.userId.country}</p> */}
+               
               </div>
             </div>
             <div className="flex items-center mb-2">
@@ -326,16 +325,16 @@ try {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <Image
-                  width={10}
-                  height={10}
+                  width={100}
+                  height={40}
             
-                  src={review.workId.images[0]} // Placeholder for the logo image
-                  alt={review.workId.images[0]}
+                  src={review?.workId?.images ? review.workId.images[0] : '/placeholder.png'} // Fallback to a placeholder image
+                  alt={review?.workId?.images ? review.workId.images[0] : 'placeholder'}
                   className="w-10 h-10 mr-2"
                 />
                 <div>
-                  <p className="font-bold">{review.workId.title}</p>
-                  <p className="text-sm text-gray-600">₹{review.workId.cost}</p>
+                  <p className="font-bold">{review?.workId?.title}</p>
+                  <p className="text-sm text-gray-600">₹{review?.workId?.cost}</p>
                 </div>
               </div>
               <div className="text-right">
