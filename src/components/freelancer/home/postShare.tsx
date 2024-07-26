@@ -21,7 +21,7 @@ interface PostShareProps {
 
 const PostShare: React.FC<PostShareProps> = ({ postId, setOpenShare }) => {
     
-  const shareUrl = `http://localhost:3000/posts/${postId}`; 
+  const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${postId}`; 
   console.log('po',shareUrl);
 
   const handleClose = () => {
